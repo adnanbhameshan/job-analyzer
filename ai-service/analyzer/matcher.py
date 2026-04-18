@@ -1,12 +1,22 @@
 """Resume-to-job-description matching engine."""
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import math
+from collections import Counter
+
+
+def get_tokens(text: str) -> list[str]:
+    """Extract unigrams and bigrams from text."""
+    words = text.split()
+    tokens = words.copy()
+    for i in range(len(words) - 1):
+        tokens.append(words[i] + " " + words[i+1])
+    return tokens
 
 
 def calculate_similarity(resume_text: str, job_description: str) -> float:
     """
     Compute cosine similarity between resume and job description using TF-IDF.
+    Implemented in pure Python to avoid large dependencies like scikit-learn.
 
     Args:
         resume_text: Preprocessed resume text.
@@ -18,16 +28,36 @@ def calculate_similarity(resume_text: str, job_description: str) -> float:
     if not resume_text.strip() or not job_description.strip():
         return 0.0
 
-    vectorizer = TfidfVectorizer(ngram_range=(1, 2), stop_words="english")
+    resume_tokens = get_tokens(resume_text)
+    job_tokens = get_tokens(job_description)
+    
+    resume_set = set(resume_tokens)
+    job_set = set(job_tokens)
 
-    try:
-        tfidf_matrix = vectorizer.fit_transform([resume_text, job_description])
-    except ValueError:
+    vocab = set(resume_tokens + job_tokens)
+    resume_tf = Counter(resume_tokens)
+    job_tf = Counter(job_tokens)
+
+    def get_tfidf_vector(tf_counter):
+        vec = []
+        for word in vocab:
+            tf = tf_counter[word]
+            df = (1 if word in resume_set else 0) + (1 if word in job_set else 0)
+            idf = math.log(3.0 / (1.0 + df)) + 1.0
+            vec.append(tf * idf)
+        return vec
+
+    vec1 = get_tfidf_vector(resume_tf)
+    vec2 = get_tfidf_vector(job_tf)
+
+    dot = sum(a * b for a, b in zip(vec1, vec2))
+    norm_a = math.sqrt(sum(a * a for a in vec1))
+    norm_b = math.sqrt(sum(b * b for b in vec2))
+
+    if norm_a == 0 or norm_b == 0:
         return 0.0
 
-    similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-    score = float(similarity[0][0]) * 100
-
+    score = (dot / (norm_a * norm_b)) * 100
     return round(score, 1)
 
 
