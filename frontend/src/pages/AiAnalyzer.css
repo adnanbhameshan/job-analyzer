@@ -1,0 +1,528 @@
+/* ==========================================================================
+   AI Analyzer Page — Scoped Styles
+   
+   Premium design with animated progress bar, skill badges, glassmorphism
+   cards, and smooth transitions. Consistent with Trackr's indigo/slate
+   color palette.
+   ========================================================================== */
+
+/* --- Page Layout --------------------------------------------------------- */
+
+.ai-analyzer {
+  max-width: 960px;
+  margin: 0 auto;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ai-analyzer__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.ai-analyzer__title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ai-analyzer__title-icon {
+  color: #6366f1;
+}
+
+.ai-analyzer__subtitle {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+/* --- Form Section -------------------------------------------------------- */
+
+.ai-analyzer__form {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.ai-analyzer__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .ai-analyzer__form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Upload Zone --------------------------------------------------------- */
+
+.ai-analyzer__upload-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.ai-analyzer__dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: #f8fafc;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.ai-analyzer__dropzone:hover,
+.ai-analyzer__dropzone--active {
+  border-color: #6366f1;
+  background: #eef2ff;
+}
+
+.ai-analyzer__dropzone--has-file {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.ai-analyzer__dropzone-icon {
+  width: 40px;
+  height: 40px;
+  color: #94a3b8;
+  transition: color 0.25s;
+}
+
+.ai-analyzer__dropzone:hover .ai-analyzer__dropzone-icon {
+  color: #6366f1;
+}
+
+.ai-analyzer__dropzone--has-file .ai-analyzer__dropzone-icon {
+  color: #22c55e;
+}
+
+.ai-analyzer__dropzone-text {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.ai-analyzer__dropzone-text strong {
+  color: #6366f1;
+}
+
+.ai-analyzer__dropzone-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.ai-analyzer__filename {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #16a34a;
+  margin-top: 0.25rem;
+}
+
+/* --- Job Description Input ----------------------------------------------- */
+
+.ai-analyzer__jd-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-analyzer__jd-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.ai-analyzer__jd-textarea {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+  min-height: 180px;
+  color: #1e293b;
+  background: #f8fafc;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  line-height: 1.6;
+}
+
+.ai-analyzer__jd-textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: white;
+}
+
+.ai-analyzer__jd-textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* --- Analyze Button ------------------------------------------------------ */
+
+.ai-analyzer__submit-row {
+  display: flex;
+  justify-content: center;
+}
+
+.ai-analyzer__submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.ai-analyzer__submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.ai-analyzer__submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ai-analyzer__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Loading State ------------------------------------------------------- */
+
+.ai-analyzer__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #64748b;
+}
+
+.ai-analyzer__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-analyzer__loading-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* --- Error Banner -------------------------------------------------------- */
+
+.ai-analyzer__error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.ai-analyzer__error-icon {
+  color: #ef4444;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.ai-analyzer__error-text {
+  color: #991b1b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* --- Results Section ----------------------------------------------------- */
+
+.ai-analyzer__results {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.ai-analyzer__results-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* --- Score Card ---------------------------------------------------------- */
+
+.ai-analyzer__score-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.ai-analyzer__score-ring {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1.25rem;
+}
+
+.ai-analyzer__score-ring svg {
+  transform: rotate(-90deg);
+}
+
+.ai-analyzer__score-track {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 10;
+}
+
+.ai-analyzer__score-fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s ease-out, stroke 0.5s ease;
+}
+
+.ai-analyzer__score-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-analyzer__score-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ai-analyzer__score-percent {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ai-analyzer__score-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Skills Grid --------------------------------------------------------- */
+
+.ai-analyzer__skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .ai-analyzer__skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ai-analyzer__skills-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.ai-analyzer__skills-heading {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-analyzer__skills-heading--matched {
+  color: #16a34a;
+}
+
+.ai-analyzer__skills-heading--missing {
+  color: #dc2626;
+}
+
+.ai-analyzer__skills-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.ai-analyzer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ai-analyzer__badge {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 99px;
+  animation: badgePop 0.3s ease-out backwards;
+}
+
+@keyframes badgePop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ai-analyzer__badge--matched {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.ai-analyzer__badge--missing {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* --- Suggestions --------------------------------------------------------- */
+
+.ai-analyzer__suggestions {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.ai-analyzer__suggestions-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-analyzer__suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  animation: fadeInUp 0.3s ease-out backwards;
+}
+
+.ai-analyzer__suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.ai-analyzer__suggestion-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: #6366f1;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}
+
+.ai-analyzer__suggestion-text {
+  font-size: 0.875rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+/* --- Reset Button -------------------------------------------------------- */
+
+.ai-analyzer__reset-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.ai-analyzer__reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  background: white;
+  color: #64748b;
+  transition: all 0.25s;
+}
+
+.ai-analyzer__reset-btn:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: #eef2ff;
+}

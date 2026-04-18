@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trackr - Project Specification Document</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;color:#1e293b;line-height:1.7;background:#fff;font-size:11pt}
+@media print{body{font-size:10pt}h1{font-size:22pt!important}.page-break{page-break-before:always}.no-break{page-break-inside:avoid}}
+.container{max-width:800px;margin:0 auto;padding:40px 50px}
+h1{font-size:26pt;font-weight:800;color:#4338ca;margin-bottom:4px;letter-spacing:-0.5px}
+h2{font-size:16pt;font-weight:700;color:#1e293b;margin:32px 0 14px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
+h3{font-size:12pt;font-weight:700;color:#334155;margin:18px 0 8px}
+h4{font-size:11pt;font-weight:600;color:#475569;margin:12px 0 6px}
+p,li{color:#334155;margin-bottom:6px}
+ul{padding-left:22px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:10pt}
+th{background:#f1f5f9;color:#334155;font-weight:700;text-align:left;padding:10px 12px;border:1px solid #e2e8f0}
+td{padding:8px 12px;border:1px solid #e2e8f0;vertical-align:top}
+tr:nth-child(even){background:#f8fafc}
+.subtitle{font-size:13pt;color:#64748b;font-weight:500;margin-bottom:2px}
+.meta{color:#94a3b8;font-size:9.5pt;margin-bottom:30px}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:9pt;font-weight:600}
+.badge-blue{background:#e0e7ff;color:#4338ca}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-yellow{background:#fef9c3;color:#854d0e}
+.badge-red{background:#ffe4e6;color:#be123c}
+.diagram-box{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:24px;margin:16px 0 20px;text-align:center;font-family:'Courier New',monospace;font-size:9.5pt;line-height:1.9;white-space:pre;overflow-x:auto}
+.info-box{background:#eff6ff;border-left:4px solid #4338ca;padding:12px 16px;border-radius:0 6px 6px 0;margin:12px 0;font-size:10pt}
+.cover-page{text-align:center;padding:120px 0 80px}
+.cover-page h1{font-size:36pt;margin-bottom:8px}
+.cover-page .subtitle{font-size:16pt}
+.toc a{color:#4338ca;text-decoration:none}
+.toc li{margin-bottom:4px}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:9.5pt;color:#7c3aed}
+.flow-arrow{color:#4338ca;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- COVER PAGE -->
+<div class="cover-page">
+<h1>Trackr</h1>
+<p class="subtitle">Job Application Analyzer</p>
+<p class="subtitle" style="color:#94a3b8;font-size:12pt;margin-top:6px">Project Specification Document</p>
+<div style="margin-top:60px;color:#94a3b8;font-size:10pt">
+<p><strong>Version:</strong> 1.0</p>
+<p><strong>Date:</strong> April 2, 2026</p>
+<p><strong>Author:</strong> Adnan Bhameshan</p>
+<p><strong>Stack:</strong> MERN (MongoDB, Express.js, React, Node.js)</p>
+</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- TABLE OF CONTENTS -->
+<h2>Table of Contents</h2>
+<ol class="toc" style="padding-left:22px">
+<li><a href="#s1">Executive Summary</a></li>
+<li><a href="#s2">System Architecture Overview</a></li>
+<li><a href="#s3">Technology Stack</a></li>
+<li><a href="#s4">Project Directory Structure</a></li>
+<li><a href="#s5">Database Schema Design</a></li>
+<li><a href="#s6">API Endpoints Specification</a></li>
+<li><a href="#s7">Authentication Flow</a></li>
+<li><a href="#s8">Application Data Flow</a></li>
+<li><a href="#s9">Frontend Component Architecture</a></li>
+<li><a href="#s10">Request-Response Lifecycle</a></li>
+<li><a href="#s11">Functional Requirements</a></li>
+<li><a href="#s12">Non-Functional Requirements</a></li>
+<li><a href="#s13">Deployment Architecture</a></li>
+<li><a href="#s14">Security Considerations</a></li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<h2 id="s1">1. Executive Summary</h2>
+<p><strong>Trackr</strong> is a comprehensive, full-stack web application designed to help job seekers organize, visualize, and systematically track their job application pipelines. The platform provides an interactive analytics dashboard with real-time metrics, a complete CRUD interface for managing job records, and secure JWT-based authentication — enabling users to monitor applications from initial submission through to offer stage.</p>
+<div class="info-box">
+<strong>Key Value Proposition:</strong> Trackr replaces fragmented spreadsheet-based job tracking with a purpose-built, cloud-hosted dashboard that provides conversion rates, pipeline visualization, and data export capabilities.
+</div>
+
+<!-- 2. SYSTEM ARCHITECTURE -->
+<h2 id="s2">2. System Architecture Overview</h2>
+<p>The application follows a <strong>three-tier client-server architecture</strong> using the MERN stack. The frontend (Presentation Layer), backend API (Application Layer), and database (Data Layer) are fully decoupled and communicate exclusively via RESTful HTTP APIs.</p>
+
+<h3>2.1 High-Level Architecture Diagram</h3>
+<div class="diagram-box">
+┌─────────────────────────────────────────────────────────────────────┐
+│                      PRESENTATION LAYER                             │
+│                    (Vercel — Frontend Host)                          │
+│                                                                     │
+│   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐           │
+│   │  Login   │  │ Register │  │Dashboard │  │ Job List │           │
+│   │   Page   │  │   Page   │  │   Page   │  │   Page   │           │
+│   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘           │
+│        │              │              │              │                │
+│        └──────────────┴──────┬───────┴──────────────┘                │
+│                              │                                      │
+│                    ┌─────────▼──────────┐                           │
+│                    │   Axios API Client │                           │
+│                    │  (withCredentials) │                           │
+│                    └─────────┬──────────┘                           │
+└──────────────────────────────┼──────────────────────────────────────┘
+                               │  HTTPS + HTTP-Only Cookies
+                               ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER                               │
+│                    (Render — Backend Host)                            │
+│                                                                      │
+│   ┌──────────────────────────────────────────────────────────────┐   │
+│   │                      Express.js Server                       │   │
+│   │  ┌────────────┐  ┌─────────────┐  ┌───────────────────┐     │   │
+│   │  │ Middleware  │  │   Routes    │  │   Controllers     │     │   │
+│   │  │ ─ CORS     │  │ /api/auth/* │  │ authController.js │     │   │
+│   │  │ ─ JSON     │  │ /api/jobs/* │  │ jobController.js  │     │   │
+│   │  │ ─ Cookies  │  └──────┬──────┘  └────────┬──────────┘     │   │
+│   │  │ ─ Auth JWT │         │                  │                │   │
+│   │  └────────────┘         └──────────────────┘                │   │
+│   └──────────────────────────────────────────────────────────────┘   │
+└──────────────────────────────┬───────────────────────────────────────┘
+                               │  Mongoose ODM
+                               ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                         DATA LAYER                                   │
+│                    (MongoDB Atlas — Cloud)                            │
+│                                                                      │
+│             ┌──────────────┐      ┌──────────────┐                  │
+│             │    Users     │◄────►│     Jobs     │                  │
+│             │  Collection  │ ref  │  Collection  │                  │
+│             └──────────────┘      └──────────────┘                  │
+└──────────────────────────────────────────────────────────────────────┘
+</div>
+
+<div class="page-break"></div>
+
+<!-- 3. TECHNOLOGY STACK -->
+<h2 id="s3">3. Technology Stack</h2>
+<h3>3.1 Frontend</h3>
+<table><tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>React</td><td>19.2</td><td>UI component library (SPA framework)</td></tr>
+<tr><td>Vite</td><td>8.0</td><td>Build tool & dev server with HMR</td></tr>
+<tr><td>Tailwind CSS</td><td>4.2</td><td>Utility-first CSS styling framework</td></tr>
+<tr><td>React Router DOM</td><td>7.13</td><td>Client-side routing & navigation</td></tr>
+<tr><td>Recharts</td><td>3.8</td><td>SVG charting (Pie charts for dashboard)</td></tr>
+<tr><td>Axios</td><td>1.13</td><td>HTTP client with cookie support</td></tr>
+<tr><td>Lucide React</td><td>0.577</td><td>Icon library</td></tr>
+<tr><td>date-fns</td><td>4.1</td><td>Date formatting utilities</td></tr>
+</table>
+
+<h3>3.2 Backend</h3>
+<table><tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>Node.js</td><td>Latest LTS</td><td>Server-side JavaScript runtime</td></tr>
+<tr><td>Express.js</td><td>5.2</td><td>RESTful API framework</td></tr>
+<tr><td>Mongoose</td><td>9.3</td><td>MongoDB object data modeling (ODM)</td></tr>
+<tr><td>jsonwebtoken</td><td>9.0</td><td>JWT generation & verification</td></tr>
+<tr><td>bcryptjs</td><td>3.0</td><td>Password hashing (salt + hash)</td></tr>
+<tr><td>cookie-parser</td><td>1.4</td><td>Parse HTTP-Only cookies</td></tr>
+<tr><td>cors</td><td>2.8</td><td>Cross-Origin Resource Sharing</td></tr>
+<tr><td>dotenv</td><td>17.3</td><td>Environment variable management</td></tr>
+<tr><td>nodemailer</td><td>8.0</td><td>Email notification service</td></tr>
+</table>
+
+<!-- 4. DIRECTORY STRUCTURE -->
+<h2 id="s4">4. Project Directory Structure</h2>
+<div class="diagram-box" style="text-align:left">
+trackr/
+├── backend/
+│   ├── controllers/
+│   │   ├── authController.js      ← Login, Register, Logout, Profile
+│   │   └── jobController.js       ← CRUD + Dashboard Metrics
+│   ├── middleware/
+│   │   └── authMiddleware.js      ← JWT verification guard
+│   ├── models/
+│   │   ├── User.js                ← User schema + password hashing
+│   │   └── Job.js                 ← Job schema + status enum
+│   ├── routes/
+│   │   ├── authRoutes.js          ← /api/auth/* route definitions
+│   │   └── jobRoutes.js           ← /api/jobs/* route definitions
+│   ├── utils/
+│   │   └── generateToken.js       ← JWT creation + cookie setting
+│   ├── seed.js                    ← Database seeding script
+│   ├── server.js                  ← Express app entry point
+│   ├── package.json
+│   └── .env                       ← Environment variables
+│
+├── frontend/
+│   └── src/
+│       ├── api/
+│       │   └── client.js          ← Axios instance (baseURL + cookies)
+│       ├── components/
+│       │   ├── Navbar.jsx         ← Navigation bar + auth state
+│       │   └── ProtectedRoute.jsx ← Route guard wrapper
+│       ├── pages/
+│       │   ├── Dashboard.jsx      ← Analytics + Pie chart + metrics
+│       │   ├── JobList.jsx        ← Table view + search + CSV export
+│       │   ├── JobForm.jsx        ← Add/Edit job + URL auto-import
+│       │   ├── Login.jsx          ← Login form
+│       │   └── Register.jsx       ← Registration form
+│       ├── App.jsx                ← Root component + router setup
+│       └── main.jsx               ← React DOM entry point
+│
+├── Project_Specification.md
+└── README.md
+</div>
+
+<div class="page-break"></div>
+
+<!-- 5. DATABASE SCHEMA -->
+<h2 id="s5">5. Database Schema Design</h2>
+
+<h3>5.1 Entity-Relationship Diagram</h3>
+<div class="diagram-box">
+┌────────────────────────────┐         ┌────────────────────────────┐
+│          USERS             │         │           JOBS             │
+├────────────────────────────┤         ├────────────────────────────┤
+│ _id        : ObjectId [PK]│         │ _id        : ObjectId [PK]│
+│ name       : String  [REQ]│         │ user       : ObjectId [FK]│──┐
+│ email      : String  [UNQ]│         │ company    : String  [REQ]│  │
+│ password   : String  [HSH]│    1:N  │ role       : String  [REQ]│  │
+│ googleId   : String       │◄────────│ status     : Enum         │  │
+│ authProvider: Enum        │         │ source     : String       │  │
+│ isVerified : Boolean      │         │ jobLink    : String       │  │
+│ verificationToken: String │         │ isImported : Boolean      │  │
+│ createdAt  : Date   [AUTO]│         │ createdAt  : Date   [AUTO]│  │
+│ updatedAt  : Date   [AUTO]│         │ updatedAt  : Date   [AUTO]│  │
+└────────────────────────────┘         └────────────────────────────┘  │
+         ▲                                                             │
+         └─────────────────────────────────────────────────────────────┘
+                              References (user → Users._id)
+</div>
+
+<h3>5.2 Users Collection Schema</h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+<tr><td><code>_id</code></td><td>ObjectId</td><td>Primary Key</td><td>Auto-generated unique identifier</td></tr>
+<tr><td><code>name</code></td><td>String</td><td>Required</td><td>User's full name</td></tr>
+<tr><td><code>email</code></td><td>String</td><td>Required, Unique</td><td>Login identifier</td></tr>
+<tr><td><code>password</code></td><td>String</td><td>Hashed (bcrypt, 10 rounds)</td><td>Encrypted password. Optional for OAuth</td></tr>
+<tr><td><code>googleId</code></td><td>String</td><td>Optional</td><td>Google OAuth identifier</td></tr>
+<tr><td><code>authProvider</code></td><td>Enum</td><td>'local' | 'google'</td><td>Authentication method used</td></tr>
+<tr><td><code>isVerified</code></td><td>Boolean</td><td>Default: false</td><td>Email verification status</td></tr>
+</table>
+
+<h3>5.3 Jobs Collection Schema</h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+<tr><td><code>_id</code></td><td>ObjectId</td><td>Primary Key</td><td>Auto-generated unique identifier</td></tr>
+<tr><td><code>user</code></td><td>ObjectId</td><td>Required, FK → Users</td><td>Owner reference for data isolation</td></tr>
+<tr><td><code>company</code></td><td>String</td><td>Required, Trimmed</td><td>Company name</td></tr>
+<tr><td><code>role</code></td><td>String</td><td>Required, Trimmed</td><td>Job title / position</td></tr>
+<tr><td><code>status</code></td><td>Enum</td><td><span class="badge badge-blue">Applied</span> <span class="badge badge-yellow">Interview</span> <span class="badge badge-green">Offer</span> <span class="badge badge-red">Rejected</span></td><td>Current pipeline stage</td></tr>
+<tr><td><code>source</code></td><td>String</td><td>Default: 'manual'</td><td>Origin (linkedin, naukri, manual, etc.)</td></tr>
+<tr><td><code>jobLink</code></td><td>String</td><td>Optional</td><td>URL to original job posting</td></tr>
+<tr><td><code>isImported</code></td><td>Boolean</td><td>Default: false</td><td>Whether auto-imported via URL</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- 6. API ENDPOINTS -->
+<h2 id="s6">6. API Endpoints Specification</h2>
+<h3>6.1 Authentication Routes — <code>/api/auth</code></h3>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th><th>Request Body</th></tr>
+<tr><td><span class="badge badge-green">POST</span></td><td><code>/register</code></td><td>No</td><td>Create new user account</td><td><code>{ name, email, password }</code></td></tr>
+<tr><td><span class="badge badge-green">POST</span></td><td><code>/login</code></td><td>No</td><td>Authenticate and issue JWT cookie</td><td><code>{ email, password }</code></td></tr>
+<tr><td><span class="badge badge-green">POST</span></td><td><code>/logout</code></td><td>No</td><td>Clear JWT cookie</td><td>—</td></tr>
+<tr><td><span class="badge badge-blue">GET</span></td><td><code>/profile</code></td><td>Yes</td><td>Get current user profile</td><td>—</td></tr>
+</table>
+
+<h3>6.2 Job Management Routes — <code>/api/jobs</code></h3>
+<table>
+<tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th><th>Request Body / Params</th></tr>
+<tr><td><span class="badge badge-blue">GET</span></td><td><code>/</code></td><td>Yes</td><td>List all jobs for user (sorted newest first)</td><td>—</td></tr>
+<tr><td><span class="badge badge-green">POST</span></td><td><code>/</code></td><td>Yes</td><td>Create a new job record</td><td><code>{ company, role, status, source, jobLink }</code></td></tr>
+<tr><td><span class="badge badge-blue">GET</span></td><td><code>/dashboard</code></td><td>Yes</td><td>Aggregated analytics & metrics</td><td>—</td></tr>
+<tr><td><span class="badge badge-yellow">PUT</span></td><td><code>/:id</code></td><td>Yes</td><td>Update an existing job entry</td><td><code>{ company, role, status, ... }</code></td></tr>
+<tr><td><span class="badge badge-red">DELETE</span></td><td><code>/:id</code></td><td>Yes</td><td>Remove a job record</td><td>URL Param: <code>id</code></td></tr>
+</table>
+
+<h3>6.3 Dashboard Metrics Response Structure</h3>
+<div class="diagram-box" style="text-align:left;font-size:9pt">
+{
+  "metrics": {
+    "Applied": 12,       // Count of jobs with status "Applied"
+    "Interview": 5,      // Count of jobs with status "Interview"
+    "Rejected": 3,       // Count of jobs with status "Rejected"
+    "Offer": 2,          // Count of jobs with status "Offer"
+    "total": 22          // Total job count
+  },
+  "recentActivity": [...],   // Last 3 job entries (sorted by createdAt)
+  "uniqueCompaniesCount": 18, // Distinct companies applied to
+  "jobsThisWeek": 4           // Jobs created in last 7 days
+}
+</div>
+
+<div class="page-break"></div>
+
+<!-- 7. AUTHENTICATION FLOW -->
+<h2 id="s7">7. Authentication Flow</h2>
+
+<h3>7.1 Registration Flow</h3>
+<div class="diagram-box">
+  ┌──────────┐          ┌──────────────┐          ┌──────────────┐         ┌──────────┐
+  │  Client  │          │  Express API │          │  User Model  │         │ MongoDB  │
+  │ (React)  │          │  (Backend)   │          │  (Mongoose)  │         │  Atlas   │
+  └────┬─────┘          └──────┬───────┘          └──────┬───────┘         └────┬─────┘
+       │                       │                         │                      │
+       │ POST /api/auth/register                         │                      │
+       │ { name, email, pass } │                         │                      │
+       │──────────────────────►│                         │                      │
+       │                       │  findOne({ email })     │                      │
+       │                       │────────────────────────►│                      │
+       │                       │                         │  db.users.findOne()  │
+       │                       │                         │─────────────────────►│
+       │                       │                         │  null (no duplicate) │
+       │                       │                         │◄─────────────────────│
+       │                       │  User.create()          │                      │
+       │                       │────────────────────────►│                      │
+       │                       │                         │  pre('save') hook:   │
+       │                       │                         │  bcrypt.hash(pass)   │
+       │                       │                         │  db.users.insertOne()│
+       │                       │                         │─────────────────────►│
+       │                       │                         │  ack + new document  │
+       │                       │  user document          │◄─────────────────────│
+       │                       │◄────────────────────────│                      │
+       │                       │                         │                      │
+       │                       │  generateToken(res, id) │                      │
+       │                       │  ─ jwt.sign(userId)     │                      │
+       │                       │  ─ res.cookie('jwt',    │                      │
+       │                       │     token, {httpOnly,   │                      │
+       │                       │     secure, sameSite})  │                      │
+       │                       │                         │                      │
+       │  Set-Cookie: jwt=xxx  │                         │                      │
+       │  { _id, name, email } │                         │                      │
+       │◄──────────────────────│                         │                      │
+       │                       │                         │                      │
+       │ localStorage.setItem  │                         │                      │
+       │  ('userInfo', data)   │                         │                      │
+       │ navigate('/')         │                         │                      │
+       ▼                       ▼                         ▼                      ▼
+</div>
+
+<h3>7.2 Login Flow</h3>
+<div class="diagram-box">
+  Client                    Express API                 User Model
+    │                           │                           │
+    │ POST /api/auth/login      │                           │
+    │ { email, password }       │                           │
+    │──────────────────────────►│                           │
+    │                           │ findOne({ email })        │
+    │                           │──────────────────────────►│
+    │                           │ user document             │
+    │                           │◄──────────────────────────│
+    │                           │                           │
+    │                           │ user.matchPassword(pass)  │
+    │                           │──────────────────────────►│
+    │                           │  bcrypt.compare()         │
+    │                           │  returns: true            │
+    │                           │◄──────────────────────────│
+    │                           │                           │
+    │                           │ generateToken(res, id)    │
+    │  Set-Cookie: jwt=token    │                           │
+    │  { _id, name, email }     │                           │
+    │◄──────────────────────────│                           │
+    │                           │                           │
+    │ Store in localStorage     │                           │
+    │ Redirect → Dashboard      │                           │
+    ▼                           ▼                           ▼
+</div>
+
+<h3>7.3 Protected Route Middleware Flow</h3>
+<div class="diagram-box">
+  Client Request           authMiddleware.js              Controller
+       │                         │                           │
+       │  GET /api/jobs          │                           │
+       │  Cookie: jwt=token      │                           │
+       │────────────────────────►│                           │
+       │                         │                           │
+       │                   ┌─────▼──────────────────┐        │
+       │                   │ Extract token from      │        │
+       │                   │ req.cookies.jwt          │        │
+       │                   └─────┬──────────────────┘        │
+       │                         │                           │
+       │                   ┌─────▼──────────────────┐        │
+       │                   │ jwt.verify(token,       │        │
+       │                   │   JWT_SECRET)           │        │
+       │                   └─────┬──────────────────┘        │
+       │                         │                           │
+       │                   ┌─────▼──────────────────┐        │
+       │                   │ User.findById(decoded   │        │
+       │                   │   .userId)              │        │
+       │                   │ .select('-password')    │        │
+       │                   └─────┬──────────────────┘        │
+       │                         │                           │
+       │                   req.user = user                   │
+       │                         │  next()                   │
+       │                         │──────────────────────────►│
+       │                         │                           │
+       │                         │       200 OK + data       │
+       │◄────────────────────────────────────────────────────│
+       ▼                         ▼                           ▼
+</div>
+
+<div class="page-break"></div>
+
+<!-- 8. APPLICATION DATA FLOW -->
+<h2 id="s8">8. Application Data Flow</h2>
+
+<h3>8.1 Job CRUD Operations Flow</h3>
+<div class="diagram-box">
+                         ┌─────────────────────────┐
+                         │       USER ACTION        │
+                         └────────────┬────────────┘
+                                      │
+              ┌───────────┬───────────┼───────────┬──────────┐
+              ▼           ▼           ▼           ▼          ▼
+         ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐ ┌────────┐
+         │ CREATE │  │  READ  │  │ UPDATE │  │ DELETE │ │METRICS │
+         │POST /  │  │GET /   │  │PUT /:id│  │DEL/:id │ │GET /   │
+         │ jobs   │  │ jobs   │  │  jobs  │  │ jobs   │ │dashbrd │
+         └───┬────┘  └───┬────┘  └───┬────┘  └───┬────┘ └───┬────┘
+             │           │           │           │           │
+             ▼           ▼           ▼           ▼           ▼
+     ┌───────────────────────────────────────────────────────────┐
+     │              AUTH MIDDLEWARE (JWT Verification)            │
+     │         Extract Cookie → Verify → Attach req.user         │
+     └─────────────────────────┬─────────────────────────────────┘
+                               │
+                               ▼
+     ┌───────────────────────────────────────────────────────────┐
+     │                  JOB CONTROLLER                           │
+     │   ┌─────────────────────────────────────────────────┐    │
+     │   │ • Ownership validation (job.user === req.user)  │    │
+     │   │ • Input validation (company & role required)    │    │
+     │   │ • Aggregation pipeline (dashboard metrics)      │    │
+     │   └─────────────────────────────────────────────────┘    │
+     └─────────────────────────┬─────────────────────────────────┘
+                               │
+                               ▼
+     ┌───────────────────────────────────────────────────────────┐
+     │                  MONGOOSE ODM                             │
+     │         Job.find() / .save() / .deleteOne()               │
+     │         Job.aggregate() / .countDocuments()               │
+     └─────────────────────────┬─────────────────────────────────┘
+                               │
+                               ▼
+     ┌───────────────────────────────────────────────────────────┐
+     │                  MongoDB Atlas                            │
+     │           jobs collection ←→ users collection             │
+     └───────────────────────────────────────────────────────────┘
+</div>
+
+<!-- 9. FRONTEND COMPONENT ARCHITECTURE -->
+<h2 id="s9">9. Frontend Component Architecture</h2>
+<div class="diagram-box">
+                        ┌──────────────────────┐
+                        │       App.jsx        │
+                        │   (BrowserRouter)    │
+                        └──────────┬───────────┘
+                                   │
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+             ┌──────▼──────┐      │       ┌──────▼──────┐
+             │  Navbar.jsx │      │       │    main     │
+             │ (Auth-Aware)│      │       │  content    │
+             └─────────────┘      │       └─────────────┘
+                                  │
+              ┌───────────────────┼───────────────────┐
+              │                   │                   │
+      ┌───────▼────────┐ ┌───────▼────────┐ ┌────────▼───────┐
+      │  Public Routes │ │Protected Routes│ │ProtectedRoute  │
+      │                │ │  (Wrapped)     │ │  (Guard HOC)   │
+      └───────┬────────┘ └───────┬────────┘ └────────────────┘
+              │                  │
+     ┌────────┼────┐    ┌────────┼──────────┬────────────┐
+     │             │    │        │          │            │
+┌────▼───┐  ┌─────▼┐ ┌─▼──────┐ │  ┌───────▼──┐ ┌──────▼───┐
+│Login   │  │Regis-│ │Dashbrd │ │  │ JobList  │ │ JobForm  │
+│  .jsx  │  │ter   │ │  .jsx  │ │  │   .jsx   │ │   .jsx   │
+└────────┘  │ .jsx │ │        │ │  │          │ │(Add/Edit)│
+            └──────┘ │Recharts│ │  │Search    │ │URL Import│
+                      │PieChart│ │  │Filter    │ │          │
+                      │Metrics │ │  │CSV Export│ │          │
+                      └────────┘ │  └──────────┘ └──────────┘
+                                 │
+                        ┌────────▼────────┐
+                        │  apiClient.js   │
+                        │ Axios Instance  │
+                        │ baseURL + creds │
+                        └─────────────────┘
+</div>
+
+<h3>9.1 Frontend Route Map</h3>
+<table>
+<tr><th>Route Path</th><th>Component</th><th>Protected</th><th>Purpose</th></tr>
+<tr><td><code>/</code></td><td>Dashboard</td><td>Yes</td><td>Analytics overview with charts & metrics</td></tr>
+<tr><td><code>/login</code></td><td>Login</td><td>No</td><td>User authentication form</td></tr>
+<tr><td><code>/register</code></td><td>Register</td><td>No</td><td>New user registration form</td></tr>
+<tr><td><code>/jobs</code></td><td>JobList</td><td>Yes</td><td>Tabular view of all job applications</td></tr>
+<tr><td><code>/jobs/add</code></td><td>JobForm</td><td>Yes</td><td>Create a new job application record</td></tr>
+<tr><td><code>/jobs/edit/:id</code></td><td>JobForm</td><td>Yes</td><td>Edit an existing job application</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- 10. REQUEST-RESPONSE LIFECYCLE -->
+<h2 id="s10">10. Request-Response Lifecycle</h2>
+<div class="diagram-box">
+┌──────────────────────────────────────────────────────────────────┐
+│                    COMPLETE REQUEST LIFECYCLE                     │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. USER ACTION                                                  │
+│     │  (Click button, submit form, page load)                    │
+│     ▼                                                            │
+│  2. REACT COMPONENT                                              │
+│     │  useState / useEffect triggers API call                    │
+│     ▼                                                            │
+│  3. AXIOS CLIENT  (api/client.js)                                │
+│     │  Attaches credentials (withCredentials: true)              │
+│     │  Sends to: VITE_API_URL || localhost:5001/api              │
+│     ▼                                                            │
+│  4. EXPRESS SERVER  (server.js)                                  │
+│     │  app.use(express.json())   ← Parse JSON body              │
+│     │  app.use(cookieParser())   ← Parse cookies                │
+│     │  app.use(cors({origin, credentials}))                     │
+│     ▼                                                            │
+│  5. ROUTE MATCHING  (routes/*.js)                                │
+│     │  /api/auth/* → authRoutes                                  │
+│     │  /api/jobs/* → jobRoutes                                   │
+│     ▼                                                            │
+│  6. AUTH MIDDLEWARE  (if protected route)                         │
+│     │  Extract JWT from cookie → Verify → Attach user            │
+│     ▼                                                            │
+│  7. CONTROLLER LOGIC                                             │
+│     │  Business logic, validation, ownership checks              │
+│     ▼                                                            │
+│  8. MONGOOSE ODM → MongoDB Atlas                                 │
+│     │  Query execution, aggregation pipelines                    │
+│     ▼                                                            │
+│  9. JSON RESPONSE  → Axios → React State → UI Re-render         │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+</div>
+
+<!-- 11. FUNCTIONAL REQUIREMENTS -->
+<h2 id="s11">11. Functional Requirements</h2>
+<h3>11.1 Authentication Module</h3>
+<ul>
+<li><strong>FR-1.1:</strong> Users can register with name, email, and password. Duplicate emails are rejected.</li>
+<li><strong>FR-1.2:</strong> Users can log in with email/password. JWT issued as HTTP-Only cookie (30-day expiry).</li>
+<li><strong>FR-1.3:</strong> Users can log out. JWT cookie is cleared server-side.</li>
+<li><strong>FR-1.4:</strong> Protected routes redirect unauthenticated users to the login page.</li>
+</ul>
+<h3>11.2 Job Management Module</h3>
+<ul>
+<li><strong>FR-2.1:</strong> Users can create job entries with company, role, status, source, and optional job URL.</li>
+<li><strong>FR-2.2:</strong> Users can view all their jobs in a searchable, filterable, sortable table.</li>
+<li><strong>FR-2.3:</strong> Users can update job details and status to reflect pipeline progression.</li>
+<li><strong>FR-2.4:</strong> Users can delete job records with confirmation dialog.</li>
+<li><strong>FR-2.5:</strong> Users can auto-import job details by pasting a job URL (LinkedIn, Naukri support).</li>
+<li><strong>FR-2.6:</strong> Users can export filtered job data as a CSV file.</li>
+</ul>
+<h3>11.3 Dashboard & Analytics Module</h3>
+<ul>
+<li><strong>FR-3.1:</strong> Display aggregate counts: Total, Applied, Interview, Offer, Rejected.</li>
+<li><strong>FR-3.2:</strong> Render an interactive donut/pie chart showing pipeline distribution.</li>
+<li><strong>FR-3.3:</strong> Calculate and display Interview Rate and Success Rate as percentages with progress bars.</li>
+<li><strong>FR-3.4:</strong> Show the 3 most recent job entries as a quick activity feed.</li>
+</ul>
+
+<!-- 12. NFRs -->
+<h2 id="s12">12. Non-Functional Requirements</h2>
+<table>
+<tr><th>ID</th><th>Category</th><th>Requirement</th></tr>
+<tr><td>NFR-1</td><td>Security</td><td>Passwords hashed using bcrypt with 10 salt rounds. JWT stored in HTTP-Only, Secure, SameSite cookies.</td></tr>
+<tr><td>NFR-2</td><td>Security</td><td>All job CRUD operations enforce ownership validation (<code>job.user === req.user._id</code>).</td></tr>
+<tr><td>NFR-3</td><td>Performance</td><td>Dashboard metrics computed via MongoDB Aggregation Pipeline for efficient server-side computation.</td></tr>
+<tr><td>NFR-4</td><td>Scalability</td><td>Stateless JWT authentication allows horizontal scaling of the backend.</td></tr>
+<tr><td>NFR-5</td><td>Usability</td><td>Fully responsive UI across desktop, tablet, and mobile breakpoints.</td></tr>
+<tr><td>NFR-6</td><td>Maintainability</td><td>MVC-inspired backend structure with separated routes, controllers, models, and middleware.</td></tr>
+<tr><td>NFR-7</td><td>Availability</td><td>Deployed on managed cloud platforms (Render + Vercel) with automatic scaling.</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- 13. DEPLOYMENT -->
+<h2 id="s13">13. Deployment Architecture</h2>
+<div class="diagram-box">
+┌───────────────────────────────────────────────────────────────────┐
+│                      DEPLOYMENT TOPOLOGY                          │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│   ┌─────────────┐        ┌─────────────┐        ┌─────────────┐ │
+│   │   VERCEL    │        │   RENDER    │        │  MONGODB    │ │
+│   │  (Frontend) │        │  (Backend)  │        │   ATLAS     │ │
+│   │             │  HTTPS │             │Mongoose│  (Database) │ │
+│   │  React SPA  │───────►│ Express API │───────►│  Cloud      │ │
+│   │  Vite Build │  REST  │ Node.js     │  ODM   │  Cluster    │ │
+│   │             │◄───────│             │◄───────│             │ │
+│   └─────────────┘        └─────────────┘        └─────────────┘ │
+│                                                                   │
+│   Environment Variables:                                          │
+│   ─────────────────────                                           │
+│   Frontend (Vercel):    VITE_API_URL = https://backend.render.com │
+│   Backend  (Render):    MONGO_URI, JWT_SECRET, CLIENT_URL,        │
+│                         NODE_ENV=production                       │
+│                                                                   │
+│   CORS Configuration:                                             │
+│   ─────────────────────                                           │
+│   origin: CLIENT_URL (Vercel domain)                              │
+│   credentials: true (for cookie transmission)                     │
+│                                                                   │
+│   Cookie Policy (Production):                                     │
+│   ─────────────────────                                           │
+│   httpOnly: true   │  secure: true   │  sameSite: 'none'         │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+</div>
+
+<!-- 14. SECURITY -->
+<h2 id="s14">14. Security Considerations</h2>
+<table>
+<tr><th>Threat</th><th>Mitigation</th><th>Implementation</th></tr>
+<tr><td>Password Theft</td><td>Bcrypt hashing</td><td><code>bcrypt.genSalt(10)</code> + <code>bcrypt.hash()</code> in User pre-save hook</td></tr>
+<tr><td>XSS Token Theft</td><td>HTTP-Only cookies</td><td>JWT stored in <code>httpOnly: true</code> cookie — inaccessible to JavaScript</td></tr>
+<tr><td>CSRF Attacks</td><td>SameSite cookie policy</td><td><code>sameSite: 'none'</code> (production) with <code>secure: true</code></td></tr>
+<tr><td>Unauthorized Access</td><td>JWT middleware guard</td><td>All <code>/api/jobs/*</code> routes run through <code>protect</code> middleware</td></tr>
+<tr><td>Data Isolation</td><td>Ownership validation</td><td>Controller checks <code>job.user === req.user._id</code> before update/delete</td></tr>
+<tr><td>Cross-Origin Abuse</td><td>CORS whitelist</td><td>Only <code>CLIENT_URL</code> origin allowed with credentials</td></tr>
+<tr><td>Token Expiry</td><td>30-day JWT lifespan</td><td><code>expiresIn: '30d'</code> in <code>jwt.sign()</code></td></tr>
+</table>
+
+<div style="margin-top:60px;text-align:center;color:#94a3b8;font-size:9pt;border-top:1px solid #e2e8f0;padding-top:20px">
+<p>— End of Document —</p>
+<p>Trackr: Job Application Analyzer • Project Specification Document v1.0 • April 2026</p>
+</div>
+
+</div>
+</body>
+</html>

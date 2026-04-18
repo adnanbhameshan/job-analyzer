@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import JobForm from './pages/JobForm';
 import JobList from './pages/JobList';
+import AiAnalyzer from './pages/AiAnalyzer';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/jobs" element={<ProtectedRoute><JobList /></ProtectedRoute>} />
             <Route path="/jobs/add" element={<ProtectedRoute><JobForm /></ProtectedRoute>} />
             <Route path="/jobs/edit/:id" element={<ProtectedRoute><JobForm /></ProtectedRoute>} />
+            <Route path="/ai-analyzer" element={<ProtectedRoute><AiAnalyzer /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>

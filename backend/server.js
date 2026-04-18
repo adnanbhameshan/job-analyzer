@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/authRoutes.js'));
 app.use('/api/jobs', require('./routes/jobRoutes.js'));
+app.use('/api/ai', require('./routes/aiRoutes.js'));
 
 
 // Database Connection & Server Start
