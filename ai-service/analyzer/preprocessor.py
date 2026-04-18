@@ -3,7 +3,7 @@
 import re
 import string
 
-from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import Counter
 
 # Common English stopwords — lightweight, no NLTK dependency required.
 STOPWORDS: set[str] = {
@@ -57,36 +57,26 @@ def preprocess_text(text: str) -> str:
 
 def extract_keywords(text: str, top_n: int = 30) -> list[str]:
     """
-    Extract the top-N keywords from text using TF-IDF scoring.
+    Extract the top-N keywords from text using frequency counts.
 
     Args:
         text: Preprocessed text string.
         top_n: Number of top keywords to return.
 
     Returns:
-        List of keywords sorted by TF-IDF score (descending).
+        List of keywords sorted by frequency (descending).
     """
     if not text.strip():
         return []
 
-    vectorizer = TfidfVectorizer(
-        max_features=200,
-        ngram_range=(1, 2),  # Unigrams + bigrams for phrases like "machine learning"
-        stop_words="english",
-    )
+    words = text.split()
+    tokens = words.copy()
+    
+    # Add bigrams
+    for i in range(len(words) - 1):
+        tokens.append(words[i] + " " + words[i+1])
 
-    try:
-        tfidf_matrix = vectorizer.fit_transform([text])
-    except ValueError:
-        # Happens if text is empty after vectorizer's own preprocessing
-        return []
+    counts = Counter(tokens)
+    most_common = counts.most_common(top_n)
 
-    feature_names = vectorizer.get_feature_names_out()
-    scores = tfidf_matrix.toarray().flatten()
-
-    # Pair features with scores and sort descending
-    scored_keywords = sorted(
-        zip(feature_names, scores), key=lambda x: x[1], reverse=True
-    )
-
-    return [keyword for keyword, _score in scored_keywords[:top_n]]
+    return [keyword for keyword, _count in most_common]
