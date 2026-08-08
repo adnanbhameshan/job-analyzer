@@ -22,8 +22,8 @@ Make sure you have [Node.js](https://nodejs.org/) installed and a MongoDB cluste
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/adnanbhameshan/job-analyzer.git
-cd job-analyzer
+git clone https://github.com/adnanbhameshan/Trackr.git
+cd Trackr
 ```
 
 ### 2. Backend Setup
